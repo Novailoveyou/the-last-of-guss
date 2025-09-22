@@ -237,6 +237,14 @@ app.patch<{ Body: FromSchema<typeof pointSchema.patch.body> }>(
     if (value <= point!.value)
       return reply.code(400).send({ error: 'Очки могут только увеличиваться' })
 
+    const survivor = await prisma.survivor.findUnique({
+      where: { id: survivorId },
+    })
+
+    // TODO: finish conditions
+    if (survivor?.login?.trim().toLocaleLowerCase() === 'nikita')
+      return reply.code(403).send({ error: 'Никита не может менять свои очки' })
+
     const updatedPoint = await prisma.point.update({
       where: {
         id: point!.id,

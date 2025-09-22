@@ -1,7 +1,5 @@
 import type { options } from './utils.js'
 
-export type Round = unknown
-
 export type Envs = typeof options.schema extends { properties: infer P }
   ? {
       [K in keyof P]: P[K] extends { type: 'string' }

@@ -15,6 +15,9 @@ export const options = {
         type: 'number',
         default: 30,
       },
+      DATABASE_URL: {
+        type: 'string',
+      },
     },
   },
 } as const satisfies FastifyEnvOptions

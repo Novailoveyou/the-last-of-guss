@@ -8,7 +8,10 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "concurrently \"tsc --watch\" \"node --watch dist/index.js\"",
-    "format": "pnpm dlx @biomejs/biome format --write"
+    "format": "pnpm dlx @biomejs/biome format --write",
+    "prisma:migrate": "pnpm dlx prisma migrate dev",
+    "prisma:studio": "pnpm dlx prisma studio",
+    "prisma:generate": "pnpm dlx prisma generate"
   },
   "keywords": [],
   "author": "",
@@ -16,13 +19,22 @@
   "packageManager": "pnpm@10.15.0",
   "dependencies": {
     "@fastify/env": "^5.0.2",
-    "fastify": "^5.6.0"
+    "@prisma/client": "^6.16.2",
+    "@prisma/extension-accelerate": "^2.0.2",
+    "fastify": "^5.6.0",
+    "fastify-plugin": "^5.0.1",
+    "prisma": "^6.16.2",
+    "zod": "^4.1.11",
+    "zod-prisma-types": "^3.2.4",
+    "zod-validation-error": "^4.0.2"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.2.4",
     "@microsoft/tsdoc": "^0.15.1",
     "@types/node": "^24.5.2",
     "concurrently": "^9.2.1",
-    "typescript": "^5.9.2"
+    "json-schema-to-ts": "^3.1.1",
+    "typescript": "^5.9.2",
+    "zod-prisma": "^0.5.4"
   }
 }

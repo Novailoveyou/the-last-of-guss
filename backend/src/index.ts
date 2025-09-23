@@ -50,10 +50,13 @@ app.register(roundController, { prefix: '/rounds' })
 
 app.register(pointController, { prefix: '/points' })
 
-await app.listen({ port: app.getEnvs<Envs>().PORT }, (err, address) => {
-  if (err) {
-    app.log.error(err)
-    process.exit(1)
-  }
-  app.log.info(`Server listening at ${address}`)
-})
+await app.listen(
+  { host: app.getEnvs<Envs>().HOST, port: app.getEnvs<Envs>().PORT },
+  (err, address) => {
+    if (err) {
+      app.log.error(err)
+      process.exit(1)
+    }
+    app.log.info(`Server listening at ${address}`)
+  },
+)

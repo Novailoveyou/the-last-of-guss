@@ -3,6 +3,12 @@
 	"files": {
 		"includes": ["src/**/*.ts"]
 	},
+	"javascript": {
+		"formatter": {
+			"quoteStyle": "single",
+			"semicolons": "asNeeded"
+		}
+	},
 	"linter": {
 		"includes": ["src/**/*.ts"]
 	}

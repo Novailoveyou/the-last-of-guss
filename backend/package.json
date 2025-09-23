@@ -7,7 +7,7 @@
   "scripts": {
     "build": "pnpm run prisma:generate && tsc",
     "start": "node dist/index.js",
-    "dev": "concurrently \"tsc --watch\" \"node --watch dist/index.js\"",
+    "dev": "pnpm run prisma:generate && concurrently \"tsc --watch\" \"node --watch dist/index.js\"",
     "format": "pnpm dlx @biomejs/biome format --write",
     "prisma:migrate": "pnpm dlx prisma migrate dev",
     "prisma:studio": "pnpm dlx prisma studio",

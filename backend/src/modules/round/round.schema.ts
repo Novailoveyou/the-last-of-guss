@@ -1,14 +1,14 @@
-import type { FastifySchema } from "fastify";
+import type { FastifySchema } from 'fastify'
 
 /** @todo add responses schemas */
 const roundSchema = {
 	params: {
-		type: "object",
-		required: ["id"],
+		type: 'object',
+		required: ['id'],
 		properties: {
-			id: { type: "string" },
+			id: { type: 'string' },
 		},
 	},
-} as const satisfies FastifySchema;
+} as const satisfies FastifySchema
 
-export default roundSchema;
+export default roundSchema

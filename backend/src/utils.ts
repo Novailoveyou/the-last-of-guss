@@ -1,40 +1,40 @@
-import type { FastifyEnvOptions } from "@fastify/env";
+import type { FastifyEnvOptions } from '@fastify/env'
 
 export const envOptions = {
 	dotenv: true,
 	schema: {
-		type: "object",
-		required: ["PORT"],
+		type: 'object',
+		required: ['PORT'],
 		properties: {
-			PORT: { type: "number", default: 1337 },
+			PORT: { type: 'number', default: 1337 },
 			ROUND_DURATION_SEC: {
-				type: "number",
+				type: 'number',
 				default: 60,
 			},
 			COOLDOWN_DURATION_SEC: {
-				type: "number",
+				type: 'number',
 				default: 30,
 			},
 			DATABASE_URL: {
-				type: "string",
+				type: 'string',
 			},
 			JWT_SECRET: {
-				type: "string",
-				default: "supersecret",
+				type: 'string',
+				default: 'supersecret',
 			},
 			COOKIE_SECRET: {
-				type: "string",
-				default: "supersecretcookie",
+				type: 'string',
+				default: 'supersecretcookie',
 			},
 			NODE_ENV: {
-				type: "string",
-				default: "development",
-				enum: ["development", "production", "test"],
+				type: 'string',
+				default: 'development',
+				enum: ['development', 'production', 'test'],
 			},
 			COOKIE_DOMAIN: {
-				type: "string",
-				default: "localhost",
+				type: 'string',
+				default: 'localhost',
 			},
 		},
 	},
-} as const satisfies FastifyEnvOptions;
+} as const satisfies FastifyEnvOptions

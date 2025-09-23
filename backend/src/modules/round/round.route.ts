@@ -1,65 +1,65 @@
-import type { FastifyPluginCallback } from "fastify";
-import type { Envs } from "../../types.js";
-import type { FromSchema } from "json-schema-to-ts";
-import roundSchema from "./round.schema.js";
+import type { FastifyPluginCallback } from 'fastify'
+import type { Envs } from '../../types.js'
+import type { FromSchema } from 'json-schema-to-ts'
+import roundSchema from './round.schema.js'
 
 const roundController: FastifyPluginCallback = (app, options, done) => {
 	/**
 	 * @description Get all rounds
 	 */
 	app.get(
-		"/",
+		'/',
 		{
 			onRequest: [app.authenticate],
 		},
 		async (request, reply) => {
-			const rounds = await app.prisma.round.findMany();
+			const rounds = await app.prisma.round.findMany()
 
-			return reply.code(200).send(rounds);
+			return reply.code(200).send(rounds)
 		},
-	);
+	)
 
 	/**
 	 * @description Create a new round
 	 */
 	app.post(
-		"/",
+		'/',
 		{
 			onRequest: [app.authenticate],
 		},
 		async (request, reply) => {
-			if (request.user.login !== "admin") {
-				return reply.code(403).send({ error: "Доступ запрещен" });
+			if (request.user.login !== 'admin') {
+				return reply.code(403).send({ error: 'Доступ запрещен' })
 			}
 
-			const now = new Date();
+			const now = new Date()
 			const startAtTime =
-				now.getTime() + app.getEnvs<Envs>().COOLDOWN_DURATION_SEC * 1000;
+				now.getTime() + app.getEnvs<Envs>().COOLDOWN_DURATION_SEC * 1000
 			const endAtTime =
-				startAtTime + app.getEnvs<Envs>().ROUND_DURATION_SEC * 1000;
+				startAtTime + app.getEnvs<Envs>().ROUND_DURATION_SEC * 1000
 
 			const newRound = await app.prisma.round.create({
 				data: {
 					startAt: new Date(startAtTime),
 					endAt: new Date(endAtTime),
 				},
-			});
+			})
 
-			return reply.code(201).send(newRound);
+			return reply.code(201).send(newRound)
 		},
-	);
+	)
 
 	/**
 	 * @description Get a specific round by ID
 	 */
 	app.get<{ Params: FromSchema<typeof roundSchema.params> }>(
-		"/:id",
+		'/:id',
 		{
 			schema: roundSchema,
 			onRequest: [app.authenticate],
 		},
 		async (request, reply) => {
-			const { id } = request.params;
+			const { id } = request.params
 			const round = await app.prisma.round.findUnique({
 				where: { id },
 				select: {
@@ -75,15 +75,15 @@ const roundController: FastifyPluginCallback = (app, options, done) => {
 						},
 					},
 				},
-			});
+			})
 
-			if (!round) return reply.code(404).send({ error: "Раунд не найден" });
+			if (!round) return reply.code(404).send({ error: 'Раунд не найден' })
 
-			return reply.code(200).send(round);
+			return reply.code(200).send(round)
 		},
-	);
+	)
 
-	done();
-};
+	done()
+}
 
-export default roundController;
+export default roundController

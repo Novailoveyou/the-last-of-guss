@@ -5,7 +5,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "build": "pnpm run prisma:generate && tsc",
+    "build": "pnpm run prisma:generate --no-engine && tsc",
     "start": "node dist/index.js",
     "dev": "pnpm run prisma:generate && concurrently \"tsc --watch\" \"node --watch dist/index.js\"",
     "format": "pnpm dlx @biomejs/biome format --write",

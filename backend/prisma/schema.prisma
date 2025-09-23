@@ -11,7 +11,7 @@ generator client {
 
 generator zod {
   provider = "zod-prisma"
-  output   = "./zod" // (default) the directory where generated zod schemas will be saved
+  output   = "../src/generated/zod" // (default) the directory where generated zod schemas will be saved
 
   // TODO: make this work .refine(imports.isURL)
   // imports  = "../zod-schemas"

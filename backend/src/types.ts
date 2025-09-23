@@ -1,6 +1,6 @@
-import type { options } from './utils.js'
+import type { envOptions } from './utils.js'
 
-export type Envs = typeof options.schema extends { properties: infer P }
+export type Envs = typeof envOptions.schema extends { properties: infer P }
   ? {
       [K in keyof P]: P[K] extends { type: 'string' }
         ? string

@@ -1,6 +1,6 @@
 import type { FastifyEnvOptions } from '@fastify/env'
 
-export const options = {
+export const envOptions = {
   dotenv: true,
   schema: {
     type: 'object',
@@ -17,6 +17,23 @@ export const options = {
       },
       DATABASE_URL: {
         type: 'string',
+      },
+      JWT_SECRET: {
+        type: 'string',
+        default: 'supersecret',
+      },
+      COOKIE_SECRET: {
+        type: 'string',
+        default: 'supersecretcookie',
+      },
+      NODE_ENV: {
+        type: 'string',
+        default: 'development',
+        enum: ['development', 'production', 'test'],
+      },
+      COOKIE_DOMAIN: {
+        type: 'string',
+        default: 'localhost',
       },
     },
   },

@@ -1,9 +1,7 @@
 import fastify from 'fastify'
-import fastifyEnv from '@fastify/env'
 import fastifyBcrypt from 'fastify-bcrypt'
 import fastifyCookie from '@fastify/cookie'
-import type { Envs } from './types.js'
-import { envOptions } from './utils.js'
+import envPlugin from './plugins/env.js'
 import prismaPlugin from './plugins/prisma.js'
 import jwtPlugin from './plugins/jwt.js'
 import survivorController from './modules/survivor/survivor.route.js'
@@ -14,7 +12,7 @@ const app = fastify({
   logger: true,
 })
 
-await app.register(fastifyEnv, envOptions)
+await app.register(envPlugin)
 
 app.register(prismaPlugin)
 
@@ -28,12 +26,12 @@ app.register(fastifyBcrypt, { saltWorkFactor: 12 })
 app.register(jwtPlugin)
 
 app.register(fastifyCookie, {
-  secret: app.getEnvs<Envs>().COOKIE_SECRET,
+  secret: app.getTypedEnvs().COOKIE_SECRET,
   parseOptions: {
-    domain: app.getEnvs<Envs>().COOKIE_DOMAIN,
+    domain: app.getTypedEnvs().COOKIE_DOMAIN,
     path: '/',
     httpOnly: true,
-    secure: app.getEnvs<Envs>().NODE_ENV === 'production',
+    secure: app.getTypedEnvs().NODE_ENV === 'production',
     sameSite: 'strict',
     maxAge: 24 * 60 * 60, // 1 day in seconds
     signed: true,
@@ -51,7 +49,7 @@ app.register(roundController, { prefix: '/rounds' })
 app.register(pointController, { prefix: '/points' })
 
 await app.listen(
-  { host: app.getEnvs<Envs>().HOST, port: app.getEnvs<Envs>().PORT },
+  { host: app.getTypedEnvs().HOST, port: app.getTypedEnvs().PORT },
   (err, address) => {
     if (err) {
       app.log.error(err)

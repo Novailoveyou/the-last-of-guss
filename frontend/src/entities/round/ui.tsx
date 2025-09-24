@@ -1,14 +1,16 @@
 import { useIsAdmin } from '@/entities/survivor/hooks'
-import { useCreateRound, useRounds } from './hooks'
+import { useCreateRound, useRound, useRounds } from './hooks'
 import { P } from '@/shared/components/typography'
 import { Button } from '@/shared/components/ui/button'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { getStatus } from './utils'
 import { cn } from '@/shared/lib/utils'
 import { Loader } from 'lucide-react'
+import { Goose } from '@/shared/components/goose'
+import { useEffect } from 'react'
 
 export const Rounds = () => {
-  const { rounds } = useRounds()
+  const { rounds, roundsAreLoading } = useRounds()
   const { roundIsMutating, triggerRound } = useCreateRound()
   const isAdmin = useIsAdmin()
 
@@ -16,7 +18,14 @@ export const Rounds = () => {
     <div className='flex flex-col justify-center items-center gap-4'>
       {!rounds?.length && (
         <P className='text-center'>
-          Раундов пока нет{isAdmin ? '. Но вы можете создать новый раунд' : ''}
+          {roundsAreLoading ? (
+            <P>Раунды загружаются...</P>
+          ) : (
+            <>
+              Раундов пока нет
+              {isAdmin ? '. Но вы можете создать новый раунд' : ''}
+            </>
+          )}
         </P>
       )}
       {isAdmin && (
@@ -44,6 +53,27 @@ export const Rounds = () => {
           </li>
         ))}
       </ul>
+    </div>
+  )
+}
+
+type RoundProps = {
+  id: string
+}
+export const Round = ({ id }: RoundProps) => {
+  const { roundIsLoading, round } = useRound(id)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (!round && !roundIsLoading) navigate('/')
+  }, [round, roundIsLoading, navigate])
+
+  if (!round) return null
+
+  return (
+    <div className='flex flex-col justify-center items-center gap-4'>
+      <P>Статус: {getStatus(round.startAt, round.endAt).label}</P>
+      <Goose />
     </div>
   )
 }

@@ -55,20 +55,20 @@ export const useRound = (id?: string) => {
   const setRound = useStore(state => state.round.setRound)
 
   const {
-    data: rounds = null,
-    error: roundsError,
-    isLoading: roundsAreLoading,
-    isValidating: roundsAreValidating,
-    mutate: mutateRounds,
+    data: round = null,
+    error: roundError,
+    isLoading: roundIsLoading,
+    isValidating: roundIsValidating,
+    mutate: mutateRound,
   } = useSWR(id ? `${ROUND_KEY}/${id}` : null, roundFetcher, {
     onSuccess: setRound,
   })
 
   return {
-    rounds,
-    roundsError,
-    roundsAreLoading,
-    roundsAreValidating,
-    mutateRounds,
+    round,
+    roundError,
+    roundIsLoading,
+    roundIsValidating,
+    mutateRound,
   }
 }

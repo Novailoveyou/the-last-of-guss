@@ -88,7 +88,7 @@ export const useMe = () => {
   const {
     data: me = null,
     error: meError,
-    isLoading: meIsMutating,
+    isLoading: meIsLoading,
     isValidating: meIsValidating,
     mutate: mutatetMe,
   } = useSWR(`${SURVIVOR_KEY}/me`, meFetcher, {
@@ -100,7 +100,7 @@ export const useMe = () => {
   return {
     me,
     meError,
-    meIsMutating,
+    meIsLoading,
     meIsValidating,
     mutatetMe,
   }

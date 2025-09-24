@@ -12,15 +12,13 @@ export const Rounds = () => {
   const { roundIsMutating, triggerRound } = useCreateRound()
   const isAdmin = useIsAdmin()
 
-  if (!rounds?.length)
-    return (
-      <>
-        <P>Раундов нет{isAdmin ? '. Но вы можете создать новый раунд' : ''}</P>
-      </>
-    )
-
   return (
     <div className='flex flex-col justify-center items-center gap-4'>
+      {!rounds?.length && (
+        <P className='text-center'>
+          Раундов пока нет{isAdmin ? '. Но вы можете создать новый раунд' : ''}
+        </P>
+      )}
       {isAdmin && (
         <Button disabled={roundIsMutating} onClick={() => triggerRound()}>
           Создать раунд {roundIsMutating && <Loader />}

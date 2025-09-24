@@ -17,12 +17,10 @@ const pointController: FastifyPluginCallback = (app, options, done) => {
 
       const survivorId = request.user.id
 
-      const point = await app.prisma.point.findUnique({
+      const point = await app.prisma.point.findFirst({
         where: {
-          roundId_survivorId: {
-            roundId,
-            survivorId,
-          },
+          roundId,
+          survivorId,
         },
         select: {
           value: true,
@@ -115,12 +113,10 @@ const pointController: FastifyPluginCallback = (app, options, done) => {
       if (now.getTime() > round.endAt.getTime())
         return reply.code(403).send({ error: 'Раунд уже завершен' })
 
-      const point = await app.prisma.point.findUnique({
+      const point = await app.prisma.point.findFirst({
         where: {
-          roundId_survivorId: {
-            roundId,
-            survivorId,
-          },
+          roundId,
+          survivorId,
         },
       })
 

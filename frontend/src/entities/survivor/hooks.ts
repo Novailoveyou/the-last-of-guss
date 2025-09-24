@@ -83,7 +83,6 @@ export const useLogout = () => {
 }
 
 export const useMe = () => {
-  const navigate = useNavigate()
   const setLogin = useStore(state => state.survivor.setLogin)
 
   const {
@@ -95,9 +94,6 @@ export const useMe = () => {
   } = useSWR(`${SURVIVOR_KEY}/me`, meFetcher, {
     onSuccess: me => {
       setLogin(me.login)
-    },
-    onError: () => {
-      navigate('/login')
     },
   })
 

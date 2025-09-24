@@ -1,4 +1,5 @@
 import fastify from 'fastify'
+import fastifyCors from '@fastify/cors'
 import fastifyBcrypt from 'fastify-bcrypt'
 import fastifyCookie from '@fastify/cookie'
 import envPlugin from './plugins/env.js'
@@ -13,6 +14,7 @@ const app = fastify({
 })
 
 await app.register(envPlugin)
+app.register(fastifyCors)
 
 app.register(prismaPlugin)
 

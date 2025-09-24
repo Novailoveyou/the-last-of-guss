@@ -41,7 +41,7 @@ const jwtPlugin: FastifyPluginAsync = fp(async (app, options) => {
       })
 
       if (!survivor || survivor.jwt !== token)
-        return reply.code(401).send({ error: 'Invalid token' })
+        return reply.code(401).send({ error: 'Неверный токен' })
     } catch (err) {
       return reply.send(err)
     }

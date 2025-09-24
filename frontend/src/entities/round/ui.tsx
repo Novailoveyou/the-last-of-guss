@@ -120,8 +120,8 @@ export const Round = ({ id }: RoundProps) => {
           </P>
           <P>
             Победитель:{' '}
-            {round.points.sort((a, b) => b.value - a.value)[0]?.survivorId ||
-              'Никто'}
+            {[...round.points].sort((a, b) => b.value - a.value)[0]
+              ?.survivorId || 'Никто'}
           </P>
         </>
       )}

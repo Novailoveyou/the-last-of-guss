@@ -19,7 +19,7 @@ export const Goose = ({ disabled, roundId }: GooseProps) => {
 
   return (
     <a
-      className='max-w-96 active:scale-95'
+      className='max-w-96 active:scale-95 transition-transform'
       aria-label='Гусь'
       role='button'
       aria-disabled={disabled}

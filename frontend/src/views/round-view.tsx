@@ -1,4 +1,6 @@
 import { useToken } from '@/entities/survivor/hooks'
+import { Container } from '@/shared/components/container'
+import { H1 } from '@/shared/components/typography'
 import { View } from '@/shared/components/view'
 import { useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router'
@@ -11,12 +13,20 @@ export function RoundView() {
   const id = params.id
 
   useEffect(() => {
-    if (!id) navigate('/rounds')
+    if (!id) navigate('/')
   }, [id, navigate])
 
   useEffect(() => {
     if (!token) navigate('/login')
   }, [token, navigate])
 
-  return <View>Round</View>
+  return (
+    <View>
+      <section>
+        <Container>
+          <H1>Раунд</H1>
+        </Container>
+      </section>
+    </View>
+  )
 }

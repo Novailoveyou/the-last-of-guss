@@ -6,6 +6,8 @@ import { useLogout, useToken } from '@/entities/survivor/hooks'
 import { Button } from './ui/button'
 import { Loader, LogOut } from 'lucide-react'
 import { Link } from 'react-router'
+import { Me } from './me'
+import { Container } from './container'
 
 type ViewPropsBase = ComponentProps<'div'>
 
@@ -20,23 +22,28 @@ export function View({ children }: ViewProps) {
 
   return (
     <div className='flex flex-col gap-8 p-4 min-h-screen'>
-      <header className='flex flex-wrap justify-evenly items-center gap-4'>
-        <div className='flex items-center gap-2'>
-          <ModeToggle />
-          {token && (
-            <Button
-              variant='ghost'
-              disabled={logoutIsMutating}
-              onClick={() => triggerLogout()}>
-              {logoutIsMutating ? <Loader /> : <LogOut />}
-            </Button>
-          )}
-        </div>
-        <Link to='/'>{APP_NAME}</Link>
+      <header>
+        <Container className='flex flex-wrap justify-start items-center gap-4'>
+          <div className='flex items-center gap-2'>
+            <ModeToggle />
+            {token && (
+              <Button
+                variant='ghost'
+                disabled={logoutIsMutating}
+                onClick={() => triggerLogout()}>
+                {logoutIsMutating ? <Loader /> : <LogOut />}
+              </Button>
+            )}
+          </div>
+          <Link to='/'>{APP_NAME}</Link>
+          <Me />
+        </Container>
       </header>
       <main>{children}</main>
       <footer>
-        <Copyright name={APP_NAME} />
+        <Container>
+          <Copyright name={APP_NAME} />
+        </Container>
       </footer>
     </div>
   )

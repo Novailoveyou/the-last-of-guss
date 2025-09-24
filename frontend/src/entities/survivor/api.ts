@@ -20,3 +20,13 @@ export const logoutFetcher = async (key: string) => {
 
   return response.data
 }
+
+export const meFetcher = async (key: string) => {
+  const response = await api.get<{ id: string; login: string }>(key, {
+    headers: {
+      Authorization: `Bearer ${getCookie('token')}`,
+    },
+  })
+
+  return response.data
+}

@@ -80,6 +80,22 @@ const survivorController: FastifyPluginCallback = (app, options, done) => {
     },
   )
 
+  app.get('/me', { onRequest: [app.authenticate] }, async (request, reply) => {
+    const survivor = await app.prisma.survivor.findUnique({
+      where: { id: request.user.id },
+      select: {
+        id: true,
+        login: true,
+      },
+    })
+
+    if (!survivor) {
+      return reply.code(404).send({ error: 'Survivor not found' })
+    }
+
+    return reply.code(200).send(survivor)
+  })
+
   done()
 }
 

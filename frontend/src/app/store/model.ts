@@ -1,7 +1,8 @@
 import type { StateCreator } from 'zustand/vanilla'
 import type { SurvivorStore } from '@/entities/survivor/model'
+import type { RoundStore } from '@/entities/round/model'
 
-export type Store = SurvivorStore
+export type Store = SurvivorStore & RoundStore
 
 type ZustandMiddleware = [['zustand/devtools', never], ['zustand/immer', never]]
 

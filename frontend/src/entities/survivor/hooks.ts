@@ -1,8 +1,9 @@
 'use client'
 
 import useSWRMutation from 'swr/mutation'
+import useSWR from 'swr'
 import useCookie from 'react-use-cookie'
-import { loginFetcher, logoutFetcher } from './api'
+import { loginFetcher, logoutFetcher, meFetcher } from './api'
 import { SURVIVOR_KEY } from './constants'
 import { useNavigate } from 'react-router'
 import { useStore } from '@/app/store'
@@ -35,7 +36,7 @@ export const useLogin = () => {
         Secure: import.meta.env.PROD,
       })
 
-      navigate('/rounds')
+      navigate('/')
     },
   })
 
@@ -79,4 +80,34 @@ export const useLogout = () => {
     resetLogout,
     triggerLogout,
   }
+}
+
+export const useMe = () => {
+  const setLogin = useStore(state => state.survivor.setLogin)
+
+  const {
+    data: me = null,
+    error: meError,
+    isLoading: meIsMutating,
+    isValidating: meIsValidating,
+    mutate: mutatetMe,
+  } = useSWR(`${SURVIVOR_KEY}/me`, meFetcher, {
+    onSuccess: me => {
+      setLogin(me.login)
+    },
+  })
+
+  return {
+    me,
+    meError,
+    meIsMutating,
+    meIsValidating,
+    mutatetMe,
+  }
+}
+
+export const useIsAdmin = () => {
+  const { me } = useMe()
+
+  return me?.login === 'admin'
 }

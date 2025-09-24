@@ -8,6 +8,7 @@ import { cn } from '@/shared/lib/utils'
 import { Loader } from 'lucide-react'
 import { Goose } from '@/shared/components/goose'
 import { useEffect, useState } from 'react'
+import { useStore } from '@/app/store'
 
 export const Rounds = () => {
   const { rounds, roundsAreLoading } = useRounds()
@@ -64,6 +65,7 @@ export const Round = ({ id }: RoundProps) => {
   const [now, setNow] = useState(new Date())
   const { roundIsLoading, round } = useRound(id)
   const navigate = useNavigate()
+  const points = useStore(state => state.point.points)
 
   useEffect(() => {
     if (!round && !roundIsLoading) navigate('/')
@@ -123,9 +125,13 @@ export const Round = ({ id }: RoundProps) => {
           </P>
         </>
       )}
-      {status.status === 'ongoing' ||
-        (status.status === 'ended' && <P>Мои очки: </P>)}
-      <Goose />
+      {(status.status === 'ongoing' || status.status === 'ended') && (
+        <P>Мои очки: {points}</P>
+      )}
+      <Goose
+        disabled={status.status === 'ended' || status.status === 'cooldown'}
+        roundId={id}
+      />
     </div>
   )
 }

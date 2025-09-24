@@ -1,3 +1,4 @@
+import { usePoints } from '@/entities/point/hooks'
 import { Round } from '@/entities/round/ui'
 import { useToken } from '@/entities/survivor/hooks'
 import { Container } from '@/shared/components/container'
@@ -14,6 +15,8 @@ export function RoundView() {
   const navigate = useNavigate()
 
   const id = params.id
+
+  usePoints(id)
 
   useEffect(() => {
     if (!id) navigate('/')

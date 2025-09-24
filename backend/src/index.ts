@@ -14,7 +14,10 @@ const app = fastify({
 })
 
 await app.register(envPlugin)
-app.register(fastifyCors)
+app.register(fastifyCors, {
+  origin: '*',
+  methods: ['POST', 'GET', 'PATCH', 'DELETE', 'OPTIONS'],
+})
 
 app.register(prismaPlugin)
 

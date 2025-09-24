@@ -3,124 +3,155 @@ import type { FromSchema } from 'json-schema-to-ts'
 import pointSchema from './point.schema.js'
 
 const pointController: FastifyPluginCallback = (app, options, done) => {
-	/**
-	 * @description Get points for a specific survivor in a specific round
-	 */
-	app.get<{ Querystring: FromSchema<typeof pointSchema.get.querystring> }>(
-		'/',
-		{
-			schema: pointSchema.get,
-			onRequest: [app.authenticate],
-		},
-		async (request, reply) => {
-			const { roundId } = request.query
+  /**
+   * @description Get points for a specific survivor in a specific round
+   */
+  app.get<{ Querystring: FromSchema<typeof pointSchema.get.querystring> }>(
+    '/',
+    {
+      schema: pointSchema.get,
+      onRequest: [app.authenticate],
+    },
+    async (request, reply) => {
+      const { roundId } = request.query
 
-			const survivorId = request.user.id
+      const survivorId = request.user.id
 
-			const point = await app.prisma.point.findUnique({
-				where: {
-					roundId_survivorId: {
-						roundId,
-						survivorId,
-					},
-				},
-			})
+      const point = await app.prisma.point.findUnique({
+        where: {
+          roundId_survivorId: {
+            roundId,
+            survivorId,
+          },
+        },
+        select: {
+          value: true,
+          survivorId: true,
+          roundId: true,
+        },
+      })
 
-			if (!point) return reply.code(404).send({ error: 'Очки не найдены' })
+      if (!point) {
+        const newPoint = await app.prisma.point.create({
+          data: {
+            survivorId,
+            roundId,
+          },
+          select: {
+            value: true,
+            survivorId: true,
+            roundId: true,
+          },
+        })
+        if (!newPoint)
+          return reply.code(400).send({ error: 'Не удалось создать очки' })
 
-			return reply.code(200).send(point)
-		},
-	)
+        return reply.code(201).send(newPoint)
+      }
 
-	/**
-	 * @description Create points for a specific survivor in a specific round
-	 */
-	app.post<{ Body: FromSchema<typeof pointSchema.post.body> }>(
-		'/',
-		{
-			schema: pointSchema.post,
-			onRequest: [app.authenticate],
-		},
-		async (request, reply) => {
-			const { roundId } = request.body
+      return reply.code(200).send(point)
+    },
+  )
 
-			const survivorId = request.user.id
+  /**
+   * @description Create points for a specific survivor in a specific round
+   */
+  app.post<{ Body: FromSchema<typeof pointSchema.post.body> }>(
+    '/',
+    {
+      schema: pointSchema.post,
+      onRequest: [app.authenticate],
+    },
+    async (request, reply) => {
+      const { roundId } = request.body
 
-			const point = await app.prisma.point.create({
-				data: {
-					survivorId,
-					roundId,
-				},
-			})
+      const survivorId = request.user.id
 
-			if (!point)
-				return reply.code(400).send({ error: 'Не удалось создать очки' })
+      const point = await app.prisma.point.create({
+        data: {
+          survivorId,
+          roundId,
+        },
+        select: {
+          value: true,
+          survivorId: true,
+          roundId: true,
+        },
+      })
 
-			return reply.code(201).send(point)
-		},
-	)
+      if (!point)
+        return reply.code(400).send({ error: 'Не удалось создать очки' })
 
-	/**
-	 * @description Update points for a specific survivor in a specific round
-	 */
-	app.patch<{ Body: FromSchema<typeof pointSchema.patch.body> }>(
-		'/',
-		{
-			schema: pointSchema.patch,
-			onRequest: [app.authenticate],
-		},
-		async (request, reply) => {
-			const { roundId, value } = request.body
+      return reply.code(201).send(point)
+    },
+  )
 
-			const survivorId = request.user.id
+  /**
+   * @description Update points for a specific survivor in a specific round
+   */
+  app.patch<{ Body: FromSchema<typeof pointSchema.patch.body> }>(
+    '/',
+    {
+      schema: pointSchema.patch,
+      onRequest: [app.authenticate],
+    },
+    async (request, reply) => {
+      const { roundId, value } = request.body
 
-			const now = new Date()
+      const survivorId = request.user.id
 
-			const round = await app.prisma.round.findUnique({
-				where: { id: roundId },
-			})
+      const now = new Date()
 
-			if (!round) return reply.code(404).send({ error: 'Раунд не найден' })
+      const round = await app.prisma.round.findUnique({
+        where: { id: roundId },
+      })
 
-			if (now.getTime() < round.startAt.getTime())
-				return reply.code(403).send({ error: 'Раунд еще не начался' })
+      if (!round) return reply.code(404).send({ error: 'Раунд не найден' })
 
-			if (now.getTime() > round.endAt.getTime())
-				return reply.code(403).send({ error: 'Раунд уже завершен' })
+      if (now.getTime() < round.startAt.getTime())
+        return reply.code(403).send({ error: 'Раунд еще не начался' })
 
-			const point = await app.prisma.point.findUnique({
-				where: {
-					roundId_survivorId: {
-						roundId,
-						survivorId,
-					},
-				},
-			})
+      if (now.getTime() > round.endAt.getTime())
+        return reply.code(403).send({ error: 'Раунд уже завершен' })
 
-			if (!point) return reply.code(404).send({ error: 'Очки не найдены' })
+      const point = await app.prisma.point.findUnique({
+        where: {
+          roundId_survivorId: {
+            roundId,
+            survivorId,
+          },
+        },
+      })
 
-			if (value <= point.value)
-				return reply
-					.code(400)
-					.send({ error: 'Очки могут только увеличиваться' })
+      if (!point) return reply.code(404).send({ error: 'Очки не найдены' })
 
-			const updatedPoint = await app.prisma.point.update({
-				where: {
-					id: point.id,
-				},
-				data: {
-					value: request.user.login === 'nikita' ? 0 : value,
-				},
-			})
+      if (value <= point.value)
+        return reply
+          .code(400)
+          .send({ error: 'Очки могут только увеличиваться' })
 
-			if (!updatedPoint)
-				return reply.code(400).send({ error: 'Не удалось обновить очки' })
+      const updatedPoint = await app.prisma.point.update({
+        where: {
+          id: point.id,
+        },
+        data: {
+          value: request.user.login === 'nikita' ? 0 : value,
+        },
+        select: {
+          value: true,
+          survivorId: true,
+          roundId: true,
+        },
+      })
 
-			return reply.code(200).send(updatedPoint)
-		},
-	)
+      if (!updatedPoint)
+        return reply.code(400).send({ error: 'Не удалось обновить очки' })
 
-	done()
+      return reply.code(200).send(updatedPoint)
+    },
+  )
+
+  done()
 }
 
 export default pointController

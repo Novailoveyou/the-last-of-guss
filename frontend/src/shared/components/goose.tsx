@@ -1,7 +1,6 @@
 import { useStore } from '@/app/store'
 import { cn } from '../lib/utils'
 import { usePatchPoint } from '@/entities/point/hooks'
-import { useEffect } from 'react'
 
 type GooseProps = {
   disabled: boolean
@@ -15,20 +14,8 @@ export const Goose = ({ disabled, roundId }: GooseProps) => {
   const handleClick = async () => {
     if (disabled) return
     addPoint()
+    await patchTriggerPoint({ roundId, value: points })
   }
-
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      await patchTriggerPoint({ roundId, value: points })
-    }, 1000)
-
-    if (disabled) {
-      clearInterval(interval)
-      return
-    }
-
-    return () => clearInterval(interval)
-  }, [disabled])
 
   return (
     <a

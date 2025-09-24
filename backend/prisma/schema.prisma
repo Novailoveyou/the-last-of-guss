@@ -95,6 +95,7 @@ model Point {
   survivorId String
   Survivor   Survivor @relation(fields: [survivorId], references: [id])
 
+  @@unique([roundId, survivorId])
   @@map("points")
 }
 

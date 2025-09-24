@@ -11,9 +11,9 @@ function App() {
       <StoreProvider>
         <BrowserRouter>
           <Routes>
-            <Route path='/' element={<RoundsView />} />
-            <Route path='/:id' element={<RoundView />} />
-            <Route path='/login' element={<LoginView />} />
+            <Route index element={<RoundsView />} />
+            <Route path=':id' element={<RoundView />} />
+            <Route path='login' element={<LoginView />} />
           </Routes>
         </BrowserRouter>
       </StoreProvider>

@@ -7,7 +7,7 @@ import { getStatus } from './utils'
 import { cn } from '@/shared/lib/utils'
 import { Loader } from 'lucide-react'
 import { Goose } from '@/shared/components/goose'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 export const Rounds = () => {
   const { rounds, roundsAreLoading } = useRounds()
@@ -61,6 +61,7 @@ type RoundProps = {
   id: string
 }
 export const Round = ({ id }: RoundProps) => {
+  const [now, setNow] = useState(new Date())
   const { roundIsLoading, round } = useRound(id)
   const navigate = useNavigate()
 
@@ -68,11 +69,62 @@ export const Round = ({ id }: RoundProps) => {
     if (!round && !roundIsLoading) navigate('/')
   }, [round, roundIsLoading, navigate])
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNow(new Date())
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [])
+
   if (!round) return null
 
+  const status = getStatus(round.startAt, round.endAt)
+
+  const startAt = new Date(round.startAt)
+  const endAt = new Date(round.endAt)
+
   return (
-    <div className='flex flex-col justify-center items-center gap-4'>
-      <P>Статус: {getStatus(round.startAt, round.endAt).label}</P>
+    <div className='flex flex-col justify-center items-center gap-2'>
+      <P>Статус: {status.label}</P>
+      {status.status === 'ongoing' && (
+        <P>
+          До конца раунда{' '}
+          {new Date(endAt.getTime() - now.getTime()).toLocaleTimeString(
+            'ru-RU',
+            {
+              second: '2-digit',
+            },
+          )}
+          сек
+        </P>
+      )}
+      {status.status === 'cooldown' && (
+        <P>
+          До начала раунда{' '}
+          {new Date(startAt.getTime() - now.getTime()).toLocaleTimeString(
+            'ru-RU',
+            {
+              second: '2-digit',
+            },
+          )}
+          сек
+        </P>
+      )}
+      {status.status === 'ended' && (
+        <>
+          <P>
+            Всего:{' '}
+            {round.points.reduce((total, point) => total + point.value, 0)}
+          </P>
+          <P>
+            Победитель:{' '}
+            {round.points.sort((a, b) => b.value - a.value)[0]?.survivorId ||
+              'Никто'}
+          </P>
+        </>
+      )}
+      {status.status === 'ongoing' ||
+        (status.status === 'ended' && <P>Мои очки: </P>)}
       <Goose />
     </div>
   )

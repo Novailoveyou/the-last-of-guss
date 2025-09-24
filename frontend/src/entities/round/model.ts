@@ -12,8 +12,8 @@ export type RoundStore = {
       startAt: Date
       endAt: Date
       points: {
-        value: true
-        survivorId: true
+        value: number
+        survivorId: string
       }[]
     } | null
     setRound: (round: RoundStore['round']['round']) => void

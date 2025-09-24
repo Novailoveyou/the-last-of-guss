@@ -62,6 +62,7 @@ export const useRound = (id?: string) => {
     mutate: mutateRound,
   } = useSWR(id ? `${ROUND_KEY}/${id}` : null, roundFetcher, {
     onSuccess: setRound,
+    refreshInterval: 10000,
   })
 
   return {

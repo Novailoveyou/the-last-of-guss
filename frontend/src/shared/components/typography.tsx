@@ -55,11 +55,7 @@ export function H4({ className, children }: TypographyProps) {
 }
 
 export function P({ className, children }: TypographyProps) {
-  return (
-    <p className={cn('[&:not(:first-child)]:mt-6 leading-7', className)}>
-      {children}
-    </p>
-  )
+  return <p className={cn('leading-7', className)}>{children}</p>
 }
 
 export function Blockquote({ className, children }: TypographyProps) {

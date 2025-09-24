@@ -88,7 +88,7 @@ model Point {
   value Int @default(0)
 
   /// point roundId
-  roundId String @unique
+  roundId String
   Round   Round  @relation(fields: [roundId], references: [id])
 
   /// point survivorId

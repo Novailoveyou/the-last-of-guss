@@ -37,6 +37,7 @@ const pointController: FastifyPluginCallback = (app, options, done) => {
             survivorId,
             roundId,
           },
+
           select: {
             value: true,
             survivorId: true,

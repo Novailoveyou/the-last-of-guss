@@ -12,7 +12,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path='/' element={<RoundsView />} />
-            <Route path=':id' element={<RoundView />} />
+            <Route path='/:id' element={<RoundView />} />
             <Route path='/login' element={<LoginView />} />
           </Routes>
         </BrowserRouter>

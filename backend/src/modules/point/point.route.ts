@@ -17,40 +17,37 @@ const pointController: FastifyPluginCallback = (app, options, done) => {
 
       const survivorId = request.user.id
 
-      const point = await app.prisma.point.findUnique({
-        where: {
-          roundId_survivorId: {
-            roundId,
-            survivorId,
+      console.log('roundId', roundId, 'survivorId', survivorId, '\n\n\n\n')
+
+      const point =
+        (await app.prisma.point.findUnique({
+          where: {
+            roundId_survivorId: {
+              roundId,
+              survivorId,
+            },
           },
-        },
-        select: {
-          value: true,
-          survivorId: true,
-          roundId: true,
-        },
-      })
+          select: {
+            value: true,
+            survivorId: true,
+            roundId: true,
+          },
+        })) ||
+        (await app.prisma.point.create({
+          data: {
+            survivorId,
+            roundId,
+          },
+          select: {
+            value: true,
+            survivorId: true,
+            roundId: true,
+          },
+        }))
 
-      console.log('point: \n\n', point)
-
-      // if (!point) {
-      //   const newPoint = await app.prisma.point.create({
-      //     data: {
-      //       survivorId,
-      //       roundId,
-      //     },
-
-      //     select: {
-      //       value: true,
-      //       survivorId: true,
-      //       roundId: true,
-      //     },
-      //   })
-      //   if (!newPoint)
-      //     return reply.code(400).send({ error: 'Не удалось создать очки' })
-
-      //   return reply.code(201).send(newPoint)
-      // }
+      if (!point) {
+        return reply.code(400).send({ error: 'Не удалось создать очки' })
+      }
 
       return reply.code(200).send(point)
     },
